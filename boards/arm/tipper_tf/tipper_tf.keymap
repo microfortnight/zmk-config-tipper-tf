@@ -11,11 +11,12 @@
 
 #define CMAKDH 0
 #define QWERTY 1
-#define SYM_L 2
-#define NAV_L 3
-#define NUM_L 4
-#define CFG_L 5
-#define BLE_L 6
+#define SYM    2
+#define NAV    3
+#define NUM    4
+#define FUN    5
+#define CFG    6
+#define BLE    7
 
 // repeating space/backspace
 &lt { quick_tap_ms = <200>; };
@@ -103,16 +104,22 @@
             bindings = <&kp ESCAPE>;
             };
 
+        combo_funLayer {
+            timeout-ms = <50>;
+            key-positions = <32 33>;
+            bindings = <&mo FUN>;
+            };
+
         combo_cfgLayer {
             timeout-ms = <50>;
             key-positions = <31 32>;
-            bindings = <&mo CFG_L>;
+            bindings = <&mo CFG>;
             };
 
         combo_bleLayer {
             timeout-ms = <50>;
             key-positions = <30 31>;
-            bindings = <&mo BLE_L>;
+            bindings = <&mo BLE>;
             };
 
         combo_capsWord {
@@ -158,13 +165,13 @@
 // |  Q  |  W  |  F  |  P  |  B  |  -  |  J  |  L  |  U  |  Y  |  '  | 
 // |A win|R alt|S ctl|T sft|  G  |     |  M  |N sft|E ctl|I alt|O win| 
 // |  Z  |X gr |  C  |  D  |  V  |  -  |  K  |  H  |  ,  |. gr |  /  | 
-// ------|    Spc    |    Nav    |     |    Sym    |    Ent    |------
+// ------|  NAV/spc  |    tab    |     |  SYM/ent  |  NUM/bsp  |------
 //       -------------------------     -------------------------
             bindings = <
-                &kp Q       &kp W       &kp F       &kp P       &kp B                   &kp J       &kp L       &kp U       &kp Y        &kp QUOT
-                &hm LGUI A  &hm LALT R  &hm LCTRL S &hm LSHFT T &kp G                   &kp M       &hm RSHFT N &hm RCTRL E &hm LALT I   &hm LGUI O
-                &kp Z       &hm RALT X  &kp C       &kp D       &kp V                   &kp K       &kp H       &kp COMMA   &hm RALT DOT &kp SLASH
-                                          &lt NUM_L SPACE  &mo NAV_L                  &mo SYM_L   &kp RET 
+                &kp Q         &kp W         &kp F         &kp P         &kp B                   &kp J         &kp L         &kp U         &kp Y         &kp QUOT
+                &hm LGUI A    &hm LALT R    &hm LCTRL S   &hm LSHFT T   &kp G                   &kp M         &hm RSHFT N   &hm RCTRL E   &hm LALT I    &hm LGUI O
+                &kp Z         &hm RALT X    &kp C         &kp D         &kp V                   &kp K         &kp H         &kp COMMA     &hm RALT DOT  &kp SLASH
+                                                          &lt NAV SPACE &kp TAB                 &lt SYM RET   &lt NUM BSPC
             >;
         };
     
@@ -174,64 +181,80 @@
 // |  Q  |  W  |  E  |  R  |  T  |  -  |  Y  |  U  |  I  |  O  |  P  | 
 // |A win|S alt|D ctl|F sft|  G  |     |  H  |J sft|K ctl|L alt|' win| 
 // |  Z  |  X  |  C  |  V  |  B  |  -  |  N  |  M  |  ,  |  .  |  /  | 
-// ------|    Spc    |    Nav    |     |    Sym    |    Ent    |------
+// ------|  NAV/spc  |    tab    |     |  SYM/ent  |  NUM/bsp  |------
 //       -------------------------     -------------------------
             bindings = <
-                &kp Q       &kp W       &kp E       &kp R       &kp T                   &kp Y       &kp U       &kp I       &kp O        &kp P
-                &hm LGUI A  &hm LALT S  &hm LCTRL D &hm LSHFT F &kp G                   &kp H       &hm RSHFT J &hm RCTRL K &hm LALT L   &hm LGUI QUOT
-                &kp Z       &hm RALT X  &kp C       &kp V       &kp B                   &kp N       &kp M       &kp COMMA   &hm RALT DOT &kp SLASH
-                                          &lt NUM_L SPACE  &mo NAV_L                  &mo SYM_L   &kp RET 
+                &kp Q         &kp W         &kp E         &kp R         &kp T                   &kp Y         &kp U         &kp I         &kp O         &kp P
+                &hm LGUI A    &hm LALT S    &hm LCTRL D   &hm LSHFT F   &kp G                   &kp H         &hm RSHFT J   &hm RCTRL K   &hm LALT L    &hm LGUI QUOT
+                &kp Z         &hm RALT X    &kp C         &kp V         &kp B                   &kp N         &kp M         &kp COMMA     &hm RALT DOT  &kp SLASH
+                                                          &lt NAV SPACE &kp TAB                 &lt SYM RET   &lt NUM BSPC
             >;
         };
 
         sym_layer {
-            label = "Symbol";
+            label = "Symbols";
 // -------------------------------     -------------------------------
-// |  `  |  ^  |  @  |  $  |  ~  |  -  |     |     |     |     |     | 
-// |  &  |  !  |  +  |  _  |  #  |     |pg up|     |     |     |     | 
-// |  |  |  ?  |  -  |  %  |     |  -  |pg dn|     |     |     |     | 
+// |  {  |  &  |  *  |  (  |  }  |  -  |     |     |     |     |     | 
+// |  :  |  $  |  %  |  ^  |  +  |     |     | sft | ctl | alt | win | 
+// |  ~  |  !  |  @  |  #  |  |  |  -  |     |     |     | gr  |     | 
 // ------|           |    CFG    |     |           |           |------
 //       -------------------------     -------------------------
             bindings = <
-                &kp GRAVE   &kp CARET   &kp AT      &kp DOLLAR  &kp TILDE               &none       &none       &none       &none       &none
-                &kp AMPS    &kp EXCL    &kp PLUS    &kp UNDER   &kp HASH                &kp PG_UP   &none       &none       &none       &none
-                &kp PIPE    &kp QMARK   &kp MINUS   &kp PERCENT &none                   &kp PG_DN   &none       &none       &none       &none
-                                                    &none       &none                   &none       &none
+                &kp LBRC      &kp AMPS      &kp ASTRK     &kp LPAR      &kp RBRC                &none         &none         &none         &none         &none
+                &kp COLON     &kp DLLR      &kp PRCT      &kp CRRT      &kp PLUS                &none         &kp RSHFT     &kp RCTRL     &kp LALT      &kp LGUI
+                &kp TILDE     &kp EXCL      &kp AT        &kp HASH      &kp PIPE                &none         &none         &none         &kp RALT      &none
+                                                          &kp RPAR      &kp UNDER               &none         &none
             >;
         };
         
         nav_layer {
             label = "Navigation";
 // -------------------------------     -------------------------------
-// |     |     |     |     |     |  -  |     |pg dn| up  |pg up| del | 
-// |     |     |     |     |     |     |home |left |down |right| end | 
-// |     |     |     |     |     |  -  |     |prev | play|stop | next| 
-// ------|           |           |     |    CFG    |           |------
+// |     |     |     |     |     |  -  |     |     |     |     |     | 
+// |     |     |     |     |     |     |     |left |down | up  |right| 
+// |     |     |     |     |     |  -  |     |home |pg dn|pg up| end | 
+// ------|           |           |     |    ent    |    bsp    |------
 //       -------------------------     -------------------------
             bindings = <
-                &none       &none       &none       &none       &none                   &none       &kp PG_UP   &kp UP      &kp PG_DN   &kp DEL
-                &kp LSHFT   &kp LGUI    &kp LALT    &kp LCTRL   &none                   &kp HOME    &kp LEFT    &kp DOWN    &kp RIGHT   &kp END
-                &none       &none       &none       &none       &none                   &none       &none       &none       &none       &none
-                                                    &none       &none                   &none       &none
+                &none         &none         &none         &none         &none                   &none         &none         &none         &none         &none
+                &kp LGUI      &kp LALT      &kp LCTRL     &kp LSHFT     &none                   &none         &kp LEFT      &kp DOWN      &kp UP        &kp RIGHT
+                &none         &kp RALT      &none         &none         &none                   &none         &kp HOME      &kp PG_DN     &kp PG_UP     &kp END
+                                                          &none         &none                   &kp RET       &kp BSPC
             >;
         };
 
         num_layer {
-            label = "Numbers and F-Keys";
+            label = "Numbers";
 // -------------------------------     -------------------------------
-// |     |  F9 | F10 | F11 | F12 |  -  |  +  | num7| num8| num9|  /  | 
-// |     |  F5 |  F6 |  F7 |  F8 |     |  0  | num4| num5| num6|  .  | 
-// |     |  F1 |  F2 |  F3 |  F4 |  -  |  -  | num1| num2| num3|  *  | 
-// ------|           |           |     |     =     |   ENTER   |------
+// |  [  |  7  |  8  |  9  |  ]  |  -  |     |     |     |     |     | 
+// |  ;  |  4  |  5  |  6  |  =  |     |     | sft | ctl | alt | win | 
+// |  `  |  1  |  2  |  3  |  \  |  -  |     |     |     | gr  |     | 
+// ------|           |           |     |           |           |------
 //       -------------------------     -------------------------
             bindings = <
-                &none       &kp F9      &kp F10     &kp F11     &kp F12                 &kp KP_PLUS &kp KP_N7   &kp KP_N8   &kp KP_N9   &kp KP_SLASH 
-                &none       &kp F5      &kp F6      &kp F7      &kp F8                  &kp KP_N0   &kp KP_N4   &kp KP_N5   &kp KP_N6   &kp KP_DOT
-                &none       &kp F1      &kp F2      &kp F3      &kp F4                  &kp KP_MINUS &kp KP_N1  &kp KP_N2   &kp KP_N3   &kp KP_MULTIPLY
-                                                    &none       &none                   &kp KP_EQUAL &kp KP_ENTER
+                &kp LBKT      &kp N7        &kp N8        &kp N9        &kp RBKT                &none         &none         &none         &none         &none
+                &kp SEMI      &kp N4        &kp N5        &kp N6        &kp EQUAL               &none         &kp RSHFT     &kp RCTRL     &kp LALT      &kp LGUI
+                &kp GRAVE     &kp N1        &kp N2        &kp N3        &kp BSLH                &none         &none         &none         &kp RALT      &none
+                                                          &kp N0        &kp MINUS               &none         &none
             >;
         };
-        
+
+        fun_layer {
+            label = "Function Keys";
+// -------------------------------     -------------------------------
+// | F12 |  F7 |  F8 |  F9 |PSCRN|  -  |     |     |     |     |     | 
+// | F11 |  F4 |  F5 |  F6 |SLCK |     |     | sft | ctl | alt | win | 
+// | F10 |  F1 |  F2 |  F3 |PSBRK|  -  |     |     |     | gr  |     | 
+// ------|    spc    |    tab    |     |           |           |------
+//       -------------------------     -------------------------
+            bindings = <
+                &kp F12       &kp F7        &kp F8        &kp F9        &kp PSCRN               &none         &none         &none         &none         &none
+                &kp F11       &kp F4        &kp F5        &kp F6        &kp SLCK                &none         &kp RSHFT     &kp RCTRL     &kp LALT      &kp LGUI
+                &kp F10       &kp F1        &kp F2        &kp F3        &kp PAUSE_BREAK         &none         &none         &none         &kp RALT      &none
+                                                          &kp SPACE     &kp TAB                 &none         &none
+            >;
+        };
+
         cfg_layer {
             label = "Configuration";
 // -------------------------------     -------------------------------
@@ -241,15 +264,15 @@
 // ------|           |           |     |           |           |------
 //       -------------------------     -------------------------
             bindings = <
-                &kp C       &none       &to CMAKDH    &to QWERTY  &kp PSCRN               &none       &none       &none       &none       &none
-                &none       &none       &none        &none         &none                   &none       &none       &none       &none       &none
-                &kp KP_NUM  &none       &none        &none         &none                   &none       &none       &none       &none       &none
-                                                     &none         &none                   &none       &none
+                &none         &none         &to CMAKDH    &to QWERTY    &kp PSCRN               &none         &none         &none         &none         &none
+                &none         &none         &none         &none         &none                   &none         &none         &none         &none         &none
+                &kp KP_NUM    &none         &none         &none         &none                   &none         &none         &none         &none         &none
+                                                          &none         &none                   &none         &none
             >;
         };
         
         ble_layer {
-            label = "BLE stuff";
+            label = "BLE Stuff";
 // -------------------------------     -------------------------------
 // |     |     |     |     |     |  -  | USB | BLE |     |     |BTCLR| 
 // |     |     |     |     |     |     |     |     |     |     |     | 
@@ -257,10 +280,10 @@
 // ------|           |           |     |           |           |------
 //       -------------------------     -------------------------
             bindings = <
-                &kp B       &none       &reset      &none       &bootloader         &out OUT_USB &out OUT_BLE &none        &none        &bt BT_CLR
-                &none       &none       &none       &none       &none               &none        &none        &none        &none        &none
-                &none       &none       &none       &none       &none               &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4
-                                                    &none       &none               &none       &none
+                &none         &none         &reset        &none         &bootloader             &out OUT_USB  &out OUT_BLE  &none         &none         &bt BT_CLR
+                &none         &none         &none         &none         &none                   &none         &none         &none         &none         &none
+                &none         &none         &none         &none         &none                   &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4
+                                                          &none         &none                   &none         &none
             >;
         };
     };
